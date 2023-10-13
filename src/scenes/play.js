@@ -44,7 +44,7 @@ export default class Play extends Phaser.Scene {
 
         this.character = this.physics.add.sprite(200, height-130, "character-run");
         this.character.play("character-run");
-        this.character.setScale(2);
+        this.character.setScale(1.75);
         this.character.setOrigin(0,1);
         this.character.setDepth(9999);
 
@@ -69,35 +69,20 @@ export default class Play extends Phaser.Scene {
             }
         }, this);
         
-        
-        setInterval(() => {
-            const cam = this.cameras.main;
-            let x = cam.scrollX + cam.width + 50;
-            
-            this.ObstacleSpawner.spawn(x);
-        
-            
-        }, 3000);
-        
-        
-        // this.cameras.main.setBounds(0, 0, width * 3, height)
-
-        console.log(this.ObstacleSpawner.group);
-
-
+    
     }
     
     update()
     {
-
+        const speed = 3 + this.stats.points/1000;
         const cam = this.cameras.main;
-        const speed = 3;
         cam.scrollX += speed;
         this.character.x += speed;
 
         this.checkCurrentBackgroundItem(this);
         this.checkCurrentGameItems();
         this.updateUI();
+        this.ObstacleSpawner.CheckCameraPosition(cam);
     }
 
     characterJump()
@@ -106,7 +91,7 @@ export default class Play extends Phaser.Scene {
             {
                 this.character.isJumping = true;
 
-                this.character.setVelocityY(-700);
+                this.character.setVelocityY(-900);
 
                 this.character.play("character-jump");
             }
@@ -164,7 +149,7 @@ export default class Play extends Phaser.Scene {
 
     updateUI()
     {
-        this.stats.points = this.cameras.main.scrollX;
+        this.stats.points = parseInt(this.cameras.main.scrollX/10);
         this.screenText.points.setText("Punkty: " + this.stats.points);
     }
 }
