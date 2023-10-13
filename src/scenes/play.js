@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import ObstacleSpawner from '../prefabs/ObstacleStawner';
+import Text from '../ui/text';
 
 export default class Play extends Phaser.Scene {
     
@@ -8,24 +9,27 @@ export default class Play extends Phaser.Scene {
         super('Play');
         this.game = game;
 
-        this.ObstacleSpawner = undefined;
     }
-
+    
     init()
     {
+        this.ObstacleSpawner = undefined;
+        this.screenText = {};
+        this.cursors = this.input.keyboard.createCursorKeys();
 
+        this.stats = {
+            points: 0
+        }
     }
     
     preload ()
     {
-        this.cursors = this.input.keyboard.createCursorKeys();
     }
     
     create()
     {
         const width = this.game.config.width;
         const height = this.game.config.height;
-    
         
         this.add.image(width * 0.5, height * 0.5, 'sky')
             .setScrollFactor(0);
@@ -44,6 +48,7 @@ export default class Play extends Phaser.Scene {
         this.character.setOrigin(0,1);
         this.character.setDepth(9999);
 
+        this.createUI();
         
         this.character.setCollideWorldBounds(true);
         this.physics.world.setBounds(0, 0, 2500000, height-130);
@@ -92,6 +97,7 @@ export default class Play extends Phaser.Scene {
 
         this.checkCurrentBackgroundItem(this);
         this.checkCurrentGameItems();
+        this.updateUI();
     }
 
     characterJump()
@@ -107,12 +113,12 @@ export default class Play extends Phaser.Scene {
 
     }
 
-    characterCollision()
+    characterCollision() // If player sprite hits Obstacle, scene restarts
     {
         this.scene.restart();
     }
 
-    checkCurrentGameItems()
+    checkCurrentGameItems() // If item (obstacles, coins etc.) will go outside of left screen side it dissapears.
     {
         const cam = this.cameras.main;
 
@@ -121,7 +127,8 @@ export default class Play extends Phaser.Scene {
        });
     }
   
-    checkCurrentBackgroundItem(scene)
+    checkCurrentBackgroundItem(scene) /* If background item (ground, mountains)
+    is outside of the screen it dissapears and new same background item is created. */
     {
         const cam = this.cameras.main;
 
@@ -140,6 +147,25 @@ export default class Play extends Phaser.Scene {
 
             }
         });
+    }
+
+    createUI() { // Generates Text for points
+        this.screenText.points = new Text(
+            this,
+            20,
+            20,
+            'Punkty: 0',
+            'title',
+            0
+            );
+
+        this.screenText.points.setScrollFactor(0, 0);
+    }
+
+    updateUI()
+    {
+        this.stats.points = this.cameras.main.scrollX;
+        this.screenText.points.setText("Punkty: " + this.stats.points);
     }
 }
 

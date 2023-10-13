@@ -114,7 +114,7 @@ export default class Text {
 
     setScrollFactor (scrollX, scrollY)
     {
-        this.obj.setScrollFator(scrollX, scrollY)
+        this.obj.setScrollFactor(scrollX, scrollY)
     }
 
     //Getters --------
