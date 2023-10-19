@@ -4,8 +4,8 @@ import Mountains from '../images/mountains.png'
 import Plateau from '../images/Plateau.png'
 import Ground from '../images/ground.png'
 import Plants from '../images/Plant.png'
-import Run from '../images/Run.png'
 import Jump from '../images/Jump.png'
+import Run from '../images/Run.png'
 import Stone from '../images/stone.png'
 
 export default class Preload extends Phaser.Scene {
@@ -28,9 +28,8 @@ export default class Preload extends Phaser.Scene {
 
         this.load.spritesheet("character-run", Run,
             {
-                frameWidth: 126,
+                frameWidth: 128,
                 frameHeight: 128,
-                spacing: 2
             }
         )
 
@@ -38,7 +37,6 @@ export default class Preload extends Phaser.Scene {
             {
                 frameWidth: 128,
                 frameHeight: 128,
-                spacing: 2
             }
         )
     }
@@ -129,16 +127,16 @@ export default class Preload extends Phaser.Scene {
 
         this.anims.create({
             key: 'character-run',
-            frames: this.anims.generateFrameNumbers('character-run', { start: 0, end: 8 }),
+            frames: this.anims.generateFrameNumbers('character-run', { start: 0, end: 7 }),
             frameRate: 10,
             repeat: -1,
         });
 
         this.anims.create({
             key: 'character-jump',
-            frames: this.anims.generateFrameNumbers('character-jump', { start: 0, end: 9 }),
+            frames: this.anims.generateFrameNumbers('character-jump', { start: 0, end: 3 }),
             frameRate: 10,
-            repeat: 0,
+            repeat: -1,
         });
        
     }

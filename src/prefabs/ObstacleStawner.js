@@ -10,9 +10,9 @@ export default class ObstacleSpawner
 		this.scene = scene
 		this.key = obstacleKey
 
-		this._gap = 1200; // Spawning gap between 1 object and 2.
-		this._spawnX = 2000; // This variable stores next object X;
-		this._spawningDistance = 100;
+		this._gap = 2000; // Spawning gap between 1 object and 2.
+		this._spawnX = this.scene.game.config.width; // This variable stores next object X;
+		this._spawningDistance = 1000;
 
 		this._group = this.scene.physics.add.group()
 	}
@@ -34,6 +34,7 @@ export default class ObstacleSpawner
 		const randomX = this.randomizeX(x);
 		
         const obst = this.group.create(randomX, bottom, this.key)
+
 		obst.setScrollFactor(1);
         obst.setDepth(9999);
 		obst.setOrigin(0,1);
@@ -48,8 +49,6 @@ export default class ObstacleSpawner
 	{
 		const min = current + this.gap - this.spawningDistance;
 		const max = current + this.gap + this.spawningDistance;
-
-		console.log(min, max);
 
 		return Phaser.Math.Between(min, max);
 	}

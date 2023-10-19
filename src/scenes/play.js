@@ -39,35 +39,36 @@ export default class Play extends Phaser.Scene {
             createAligned(this, 2, 'mountains', 0.25),
             createAligned(this, 3, 'plateau', 0.5),
             createAligned(this, 7, 'ground', 1),
-            createAligned(this, 10, 'plants', 1.25), 
+            createAligned(this, 15, 'plants', 1.25), 
         ];
 
         this.character = this.physics.add.sprite(200, height-130, "character-run");
-        this.character.play("character-run");
-        this.character.setScale(1.75);
-        this.character.setOrigin(0,1);
+        this.character.play("character-run");   
         this.character.setDepth(9999);
-
+        this.character.setOrigin(0, 1)
+        this.character.isJumping = false;
+        
         this.createUI();
         
         this.character.setCollideWorldBounds(true);
         this.physics.world.setBounds(0, 0, 2500000, height-130);
-    
+
         this.ObstacleSpawner = new ObstacleSpawner(this, 'stone');
         const ObstacleGroup = this.ObstacleSpawner.group;
 
-        this.physics.add.overlap(this.character, ObstacleGroup, this.characterCollision, null, this)
+        this.physics.add.overlap(this.character, ObstacleGroup, this.characterCollision, null, this);
         
-        this.character.isJumping = false;
         this.input.on('pointerup', this.characterJump, this);
 
-        this.character.on("animationcomplete-character-jump", function(animation, frame) {
-            if(this.character.isJumping) {
-                this.character.isJumping = false; 
-                
-                this.character.play("character-run");		
+        this.events.on('update', () => {
+            if (this.character.body.onFloor()) {
+                // Sprite jest na ziemi
+                this.character.play('character-run', true);
+            } else {
+                // Sprite jest w powietrzu
+                this.character.play('character-jump', true);
             }
-        }, this);
+        });
         
     
     }
@@ -83,17 +84,14 @@ export default class Play extends Phaser.Scene {
         this.checkCurrentGameItems();
         this.updateUI();
         this.ObstacleSpawner.CheckCameraPosition(cam);
+        console.log(this.character.isJumping)
     }
 
     characterJump()
     {
-        if(this.character.y >= this.game.config.height - 130 && !this.character.isJumping)      
+        if(this.character.body.onFloor())      
             {
-                this.character.isJumping = true;
-
-                this.character.setVelocityY(-900);
-
-                this.character.play("character-jump");
+                this.character.setVelocityY(-800);
             }
 
     }
