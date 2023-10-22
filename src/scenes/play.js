@@ -58,7 +58,7 @@ export default class Play extends Phaser.Scene {
 
         this.physics.add.overlap(this.character, ObstacleGroup, this.characterCollision, null, this);
         
-        this.input.on('pointerup', this.characterJump, this);
+        this.input.on('pointerdown', this.characterJump, this);
 
         this.events.on('update', () => {
             if (this.character.body.onFloor()) {
@@ -70,6 +70,7 @@ export default class Play extends Phaser.Scene {
             }
         });
         
+        this.showGameOver();
     
     }
     
@@ -98,7 +99,7 @@ export default class Play extends Phaser.Scene {
 
     characterCollision() // If player sprite hits Obstacle, scene restarts
     {
-        this.scene.restart();
+        this.showGameOver();
     }
 
     checkCurrentGameItems() // If item (obstacles, coins etc.) will go outside of left screen side it dissapears.
@@ -149,6 +150,34 @@ export default class Play extends Phaser.Scene {
     {
         this.stats.points = parseInt(this.cameras.main.scrollX/10);
         this.screenText.points.setText("Punkty: " + this.stats.points);
+    }
+
+    showGameOver()
+    {
+
+        this.screenText.points.setVisible(false);
+
+        this.scene.launch('GameOver', { score:  this.stats.points})
+
+        let panel = this.scene.get('GameOver');
+
+        panel.events.on('clickMenu', this.handleGoMenu, this);
+        panel.events.on('clickTryAgain', this.handleTryAgain, this);
+    }
+
+    closeGameOver()
+    {
+        this.scene.stop('GameOver');
+    }
+
+    handleGoMenu()
+    {
+        console.log("go menu")
+    }
+
+    handleTryAgain()
+    {
+        console.log("restart level");
     }
 }
 
