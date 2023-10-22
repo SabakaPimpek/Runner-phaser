@@ -33,6 +33,9 @@ export default class Text {
             case 'preload':
                 style.fontSize = 48;
                 break;
+            case 'standard':
+                style.fontSize = 32;
+                break;
         }
 
         return style;
@@ -115,6 +118,11 @@ export default class Text {
     setScrollFactor (scrollX, scrollY)
     {
         this.obj.setScrollFactor(scrollX, scrollY)
+    }
+
+    setVisible(visible)
+    {
+        this.obj.setVisible(visible );
     }
 
     //Getters --------

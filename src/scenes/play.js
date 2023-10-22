@@ -69,8 +69,6 @@ export default class Play extends Phaser.Scene {
                 this.character.play('character-jump', true);
             }
         });
-        
-        this.showGameOver();
     
     }
     
@@ -85,7 +83,6 @@ export default class Play extends Phaser.Scene {
         this.checkCurrentGameItems();
         this.updateUI();
         this.ObstacleSpawner.CheckCameraPosition(cam);
-        console.log(this.character.isJumping)
     }
 
     characterJump()
@@ -99,7 +96,15 @@ export default class Play extends Phaser.Scene {
 
     characterCollision() // If player sprite hits Obstacle, scene restarts
     {
-        this.showGameOver();
+        this.character.anims.stop();
+        this.character.setCollideWorldBounds(false);
+        this.character.setVelocityY(500);
+
+        this.time.addEvent({
+            delay : 100,
+            callback: this.showGameOver,
+            callbackScope: this
+        })
     }
 
     checkCurrentGameItems() // If item (obstacles, coins etc.) will go outside of left screen side it dissapears.
@@ -154,6 +159,8 @@ export default class Play extends Phaser.Scene {
 
     showGameOver()
     {
+        this.scene.pause();
+
 
         this.screenText.points.setVisible(false);
 
@@ -172,12 +179,28 @@ export default class Play extends Phaser.Scene {
 
     handleGoMenu()
     {
-        console.log("go menu")
+        this.closeGameOver();
+        this.goMenu();
+
+        console.log(this);
     }
 
     handleTryAgain()
     {
-        console.log("restart level");
+        this.closeGameOver();
+        this.restartGame();
+    }
+
+    // Scenes -------------------------------------
+
+    goMenu()
+    {
+        this.scene.start('Menu');
+    }
+
+    restartGame()
+    {
+        this.scene.restart();
     }
 }
 

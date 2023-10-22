@@ -4,7 +4,7 @@ import Boot from './scenes/boot'
 import Preload from './scenes/preload'
 import Menu from './ui/menu'
 import Play from './scenes/play'
-import GameOver from './scenes/gameover'
+import GameOver from './scenes/gameover';
 
 export default class App {
 
