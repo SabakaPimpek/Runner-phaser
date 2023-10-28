@@ -98,7 +98,6 @@ export default class Play extends Phaser.Scene {
     {
         this.character.anims.stop();
         this.character.setCollideWorldBounds(false);
-        this.character.setVelocityY(500);
 
         this.time.addEvent({
             delay : 100,
@@ -196,6 +195,7 @@ export default class Play extends Phaser.Scene {
     goMenu()
     {
         this.scene.start('Menu');
+        this.game.sound.stopAll();
     }
 
     restartGame()

@@ -10,9 +10,9 @@ export default class ObstacleSpawner
 		this.scene = scene
 		this.key = obstacleKey
 
-		this._gap = 2000; // Spawning gap between 1 object and 2.
+		this._gap = this.scene.game.config.width; // Spawning gap between 1 object and 2.
 		this._spawnX = this.scene.game.config.width; // This variable stores next object X;
-		this._spawningDistance = 1000;
+		this._spawningDistance = 250;
 
 		this._group = this.scene.physics.add.group()
 	}

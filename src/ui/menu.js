@@ -22,7 +22,7 @@ export default class Menu extends Phaser.Scene {
             this,
             this.game.CONFIG.centerX,
             75,
-            'Arkanoid',
+            'Runner Game',
             'title'
         )
        // Click to play
@@ -30,10 +30,16 @@ export default class Menu extends Phaser.Scene {
             this,
             this.game.CONFIG.centerX,
             this.game.CONFIG.centerY,
-            'click to play',
+            'Kliknij, aby rozpocząć',
             'standard'
        );
 
+       this.title.setScrollFactor(0);
+       this.title.setDepth(999999);
+       this.text.setScrollFactor(0);
+       this.text.setDepth(99999);
+
+        this.createMusic();
        // Create mouse input
         this.createMouseInput();
 
@@ -42,11 +48,52 @@ export default class Menu extends Phaser.Scene {
 
     }
 
-    createBackground () {
-        this.bg = this.add.graphics({ x: 0, y: 0});
-        this.bg.fillStyle('0xF4CCA1', 1);
-        this.bg.fillRect(0, 0, this.game.CONFIG.width, this.game.CONFIG.height);
+    update()
+    {
+        const cam = this.cameras.main;
+        cam.scrollX += 0.5;
 
+        this.checkCurrentBackgroundItem(this);
+    }
+
+    createBackground () {
+        this.backgroundItems = [
+            this.createAligned(this, 4, "swamp", 1)
+        ];
+    }
+
+    
+    createAligned = (scene, count, texture, scrollFactor) => {
+        let x = 0;
+        let group = [];
+        for (let i = 0; i < count; ++i)
+        {
+            const m = scene.add.image(x, 0, texture)
+                .setOrigin(0,0)
+                .setScrollFactor(scrollFactor)
+                .setDepth(0)
+
+            x += m.width;
+            group.push(m);
+        }
+        return group;
+    }
+
+    createMusic()
+    {
+        this.music = this.sound.add("music_menu");
+
+        const musicConfig = {
+             mute: false,
+             volume: 1,
+             rate: 1,
+             detune: 0,
+             seek: 0,
+             loop: true,
+             delay: 0
+        }
+ 
+        this.music.play(musicConfig); 
     }
 
     createMouseInput() {
@@ -65,8 +112,33 @@ export default class Menu extends Phaser.Scene {
         this.input.keyboard.on('keyup', handleKeyUp, this);
     }
 
+    checkCurrentBackgroundItem(scene) /* If background item (ground, mountains)
+    is outside of the screen it dissapears and new same background item is created. */
+    {
+        const cam = this.cameras.main;
+
+        this.backgroundItems.forEach(e => { // Checks every background image
+            const first = e[0];
+            
+            if(cam.scrollX >= first.x + first.width) { // Adds new background image if first is outside of the screen
+                const last = e[e.length-1];
+                e.splice(0, 1);
+                const m = scene.add.image(last.x + last.width, scene.game.config.height, first.texture.key)
+                .setOrigin(0, 1)
+                .setScrollFactor(first.scrollFactorX)
+                .setDepth(first.depth)
+
+                e.push(m);
+
+            }
+        });
+
+    }
+
     goPlay()
     {
         this.scene.start('Play', this.game);
     }
+
+    
 }

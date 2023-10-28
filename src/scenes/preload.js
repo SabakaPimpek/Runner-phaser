@@ -7,6 +7,10 @@ import Plants from '../images/Plant.png'
 import Jump from '../images/Jump.png'
 import Run from '../images/Run.png'
 import Stone from '../images/stone.png'
+import Swamp from '../images/swamp.png'
+
+import menuAudio from '../music/menu.wav'
+import jumpAudio from '../music/Jump.wav'
 
 export default class Preload extends Phaser.Scene {
     
@@ -23,8 +27,11 @@ export default class Preload extends Phaser.Scene {
         this.load.image("plateau", Plateau);
         this.load.image("ground", Ground);
         this.load.image("plants", Plants);
-        this.load.image("stone", Stone)
+        this.load.image("stone", Stone);
+        this.load.image("swamp", Swamp);
 
+        this.load.audio("music_menu", menuAudio);
+        this.load.audio("audio_jump", jumpAudio);
 
         this.load.spritesheet("character-run", Run,
             {
