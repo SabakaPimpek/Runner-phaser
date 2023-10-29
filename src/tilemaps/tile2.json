@@ -1,0 +1,69 @@
+{ "compressionlevel":-1,
+ "height":5,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[0, 457, 0, 0, 527, 498, 527, 0,
+            124, 124, 124, 124, 124, 124, 124, 124,
+            153, 153, 153, 153, 153, 153, 153, 153,
+            153, 153, 153, 153, 153, 153, 153, 153,
+            153, 153, 153, 153, 153, 153, 153, 153],
+         "height":5,
+         "id":1,
+         "name":"Bot",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":8,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0],
+         "height":5,
+         "id":2,
+         "name":"Top",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":8,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":3,
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.10.2",
+ "tileheight":21,
+ "tilesets":[
+        {
+         "columns":30,
+         "firstgid":1,
+         "image":"..\/images\/spritesheet.png",
+         "imageheight":372,
+         "imagewidth":694,
+         "margin":3,
+         "name":"d",
+         "spacing":2,
+         "tilecount":480,
+         "tileheight":21,
+         "tilewidth":21
+        }, 
+        {
+         "firstgid":481,
+         "source":"spritesheet.tsx"
+        }, 
+        {
+         "firstgid":961,
+         "source":"d.tsx"
+        }],
+ "tilewidth":21,
+ "type":"map",
+ "version":"1.10",
+ "width":8
+}

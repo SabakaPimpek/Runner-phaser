@@ -8,6 +8,7 @@ import Jump from '../images/Jump.png'
 import Run from '../images/Run.png'
 import Stone from '../images/stone.png'
 import Swamp from '../images/swamp.png'
+import Spritesheet from '../images/spritesheet.png'
 
 import menuAudio from '../music/menu.wav'
 import jumpAudio from '../music/Jump.wav'
@@ -29,6 +30,7 @@ export default class Preload extends Phaser.Scene {
         this.load.image("plants", Plants);
         this.load.image("stone", Stone);
         this.load.image("swamp", Swamp);
+        this.load.image("spritesheet", Spritesheet);
 
         this.load.audio("music_menu", menuAudio);
         this.load.audio("audio_jump", jumpAudio);
@@ -46,6 +48,7 @@ export default class Preload extends Phaser.Scene {
                 frameHeight: 128,
             }
         )
+
     }
 
     create ()

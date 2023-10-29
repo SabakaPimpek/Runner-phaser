@@ -34,12 +34,15 @@ export default class App {
             height         : 1080,
             scene          : scenes,
             backgroundColor: 0x000000,
-            pixelArt       : false,
+            pixelArt       : true,
             physics: {
                 default: 'arcade',
                 arcade: {
                     gravity: { y: 1200 }
                 }
+            },
+            scale: {
+                mode: Phaser.Scale.NEAREST
             }
         }
 

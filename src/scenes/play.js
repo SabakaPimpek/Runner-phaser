@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import ObstacleSpawner from '../prefabs/ObstacleStawner';
 import Text from '../ui/text';
 
+import tile1JSON from '../tilemaps/tile1.json'
+
 export default class Play extends Phaser.Scene {
     
     constructor (game)
@@ -24,6 +26,7 @@ export default class Play extends Phaser.Scene {
     
     preload ()
     {
+        this.load.tilemapTiledJSON("tile1", tile1JSON);
     }
     
     create()
@@ -32,17 +35,17 @@ export default class Play extends Phaser.Scene {
         const height = this.game.config.height;
         
         this.add.image(width * 0.5, height * 0.5, 'sky')
-            .setScrollFactor(0);
-
-
+        .setScrollFactor(0);
+        
+        
         this.backgroundItems = [
-            createAligned(this, 2, 'mountains', 0.25),
-            createAligned(this, 3, 'plateau', 0.5),
-            createAligned(this, 7, 'ground', 1),
-            createAligned(this, 15, 'plants', 1.25), 
+            // createAligned(this, 2, 'mountains', 0.25),
+            // createAligned(this, 3, 'plateau', 0.5),
+            // createAligned(this, 7, 'ground', 1),
+            // createAligned(this, 15, 'plants', 1.25), 
         ];
-
-        this.character = this.physics.add.sprite(200, height-130, "character-run");
+        
+        this.character = this.physics.add.sprite(200, 50, "character-run");
         this.character.play("character-run");   
         this.character.setDepth(9999);
         this.character.setOrigin(0, 1)
@@ -50,16 +53,16 @@ export default class Play extends Phaser.Scene {
         
         this.createUI();
         
-        this.character.setCollideWorldBounds(true);
-        this.physics.world.setBounds(0, 0, 2500000, height-130);
-
+        // this.character.setCollideWorldBounds(true);
+        // this.physics.world.setBounds(0, 0, 2500000, this);
+        
         this.ObstacleSpawner = new ObstacleSpawner(this, 'stone');
         const ObstacleGroup = this.ObstacleSpawner.group;
-
+        
         this.physics.add.overlap(this.character, ObstacleGroup, this.characterCollision, null, this);
         
         this.input.on('pointerdown', this.characterJump, this);
-
+        
         this.events.on('update', () => {
             if (this.character.body.onFloor()) {
                 // Sprite jest na ziemi
@@ -69,12 +72,40 @@ export default class Play extends Phaser.Scene {
                 this.character.play('character-jump', true);
             }
         });
-    
+
+        //layers
+        const tile1 = this.make.tilemap({ key: 'tile1' });
+        const tileset = tile1.addTilesetImage('spritesheet', 'spritesheet');
+
+        let top = tile1.createLayer('Top', tileset, 0, 200).setScale(4.5);
+        let bot = tile1.createLayer('Bot', tileset, 0, 200).setScale(4.5);
+
+        this.physics.add.collider(this.character, bot);
+
+        bot.setCollisionByProperty({collide: true});
+
+
+
+        // bot.setCollisionByExclusion([-1]);
+        // this.physics.add.collider(this.player, bot);
+
+        
+        top.setDepth(1);
+
+
+
+        // const matchingTiles = map.filterTiles(tile => tile.index === 1);
+
+        // const gos = matchingTiles.map(tile => {
+        //     const block = new Brick(this, tile.pixelX + 50 , tile.pixelY + 100, 'brick');
+        //     return block;
+        // });
+
     }
     
     update()
     {
-        const speed = 3 + this.stats.points/1000;
+        const speed = 2;
         const cam = this.cameras.main;
         cam.scrollX += speed;
         this.character.x += speed;
