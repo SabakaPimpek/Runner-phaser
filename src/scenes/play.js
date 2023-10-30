@@ -45,7 +45,7 @@ export default class Play extends Phaser.Scene {
             // createAligned(this, 15, 'plants', 1.25), 
         ];
         
-        this.character = this.physics.add.sprite(200, 50, "character-run");
+        this.character = this.physics.add.sprite(200, 485, "character-run");
         this.character.play("character-run");   
         this.character.setDepth(9999);
         this.character.setOrigin(0, 1)
