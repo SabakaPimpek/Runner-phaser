@@ -354,6 +354,7 @@
  <tile id="70">
   <properties>
    <property name="collide" type="bool" value="false"/>
+   <property name="damage" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="71">
