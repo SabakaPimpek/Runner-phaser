@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import ObstacleSpawner from '../prefabs/ObstacleStawner';
+import Character from '../prefabs/character'
 import Text from '../ui/text';
 
 import tile1JSON from '../tilemaps/tile1.json'
@@ -39,64 +40,34 @@ export default class Play extends Phaser.Scene {
         this.add.image(width * 0.5, height * 0.5, 'sky')
         .setScrollFactor(0);
         
-        
-        this.backgroundItems = [
-            // createAligned(this, 2, 'mountains', 0.25),
-            // createAligned(this, 3, 'plateau', 0.5),
-            // createAligned(this, 7, 'ground', 1),
-            // createAligned(this, 15, 'plants', 1.25), 
-        ];
-        
         this.createUI();
-        
-        // this.character.setCollideWorldBounds(true);
-        // this.physics.world.setBounds(0, 0, 2500000, this);
-        
-        // this.ObstacleSpawner = new ObstacleSpawner(this, 'stone');
-        // const ObstacleGroup = this.ObstacleSpawner.group;
-        
-        // this.physics.add.overlap(this.character, ObstacleGroup, this.characterCollision, null, this);
-        
-        this.input.on('pointerdown', this.characterJump, this);
-        
-        this.events.on('update', () => {
-            if (this.character.body.onFloor()) {
-                // Sprite jest na ziemi
-                this.character.play('character-run', true);
-            } else {
-                // Sprite jest w powietrzu
-                this.character.play('character-jump', true);
-            }
-        });
 
+        
+        
         const cam = this.cameras.main;
         cam.scrollY -= 200;
-
+        
         //layers
         const tile1 = this.make.tilemap({ key: 'tile1' });
         const tileset = tile1.addTilesetImage('spritesheet', 'spritesheet');
-
+        
         const objectsLayer = tile1.getObjectLayer('Objects');
-
+        
         objectsLayer.objects.forEach(objData => {
             const { x = 0, y = 0, name } = objData
-
+            
             switch (name)
             {
                 case 'character-spawn':
                     {
-                        this.character = this.physics.add.sprite(x * this.mapScale, y * this.mapScale, "character-run");
-                        this.character.play("character-run");   
-                        this.character.setDepth(9999);
-                        this.character.setOrigin(0, 1)
-                        this.character.isJumping = false;
-                        this.character.setSize(64, 128, true);
-
+                        this.character = new Character(this, x * this.mapScale, y * this.mapScale);
                         break;
                     }
             }
         })
 
+        this.input.on('pointerdown', this.character.Jump, this);
+        
         let top = tile1.createLayer('Top', tileset, 0, 0).setScale(this.mapScale);
         let bot = tile1.createLayer('Bot', tileset, 0, 0).setScale(this.mapScale);
 
@@ -119,14 +90,6 @@ export default class Play extends Phaser.Scene {
         top.setDepth(1);
 
 
-
-        // const matchingTiles = map.filterTiles(tile => tile.index === 1);
-
-        // const gos = matchingTiles.map(tile => {
-        //     const block = new Brick(this, tile.pixelX + 50 , tile.pixelY + 100, 'brick');
-        //     return block;
-        // });
-
     }
     
     update()
@@ -136,19 +99,10 @@ export default class Play extends Phaser.Scene {
         cam.scrollX += speed;
         this.character.x += speed;
 
-        this.checkCurrentBackgroundItem(this);
+        // this.checkCurrentBackgroundItem(this);
         // this.checkCurrentGameItems();
         this.updateUI();
         // this.ObstacleSpawner.CheckCameraPosition(cam);
-    }
-
-    characterJump()
-    {
-        if(this.character.body.onFloor())      
-            {
-                this.character.setVelocityY(-800);
-            }
-
     }
 
     characterCollision(character, tile) // If player sprite hits Obstacle, scene restarts

@@ -42,9 +42,9 @@ export default class App {
                     debug: true
                 }
             },
-            scale: {
-                mode: Phaser.Scale.NEAREST
-            }
+            // scale: {
+            //     mode: Phaser.Scale.LINEAR
+            // }
         }
 
         // CREATE GAME APP

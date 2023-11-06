@@ -55,6 +55,7 @@ export default class Preload extends Phaser.Scene {
     {
         // Create sprite animations
         this.createAllAnims();
+        this.createLoadingBar();
 
         //Go to menu
         this.time.addEvent({
@@ -125,29 +126,7 @@ export default class Preload extends Phaser.Scene {
 
     createAllAnims()
     {
-        // Hero walking
-
-        // this.anims.create({
-        //     key:  'character-walk-down',
-        //     frames: this.anims.generateFrameNames('character', { frames: [0, 1, 0, 2]}),
-        //     repeat: -1,
-        //     frameRate: 4
-        // });
-        
-
-        this.anims.create({
-            key: 'character-run',
-            frames: this.anims.generateFrameNumbers('character-run', { start: 0, end: 7 }),
-            frameRate: 10,
-            repeat: -1,
-        });
-
-        this.anims.create({
-            key: 'character-jump',
-            frames: this.anims.generateFrameNumbers('character-jump', { start: 0, end: 3 }),
-            frameRate: 10,
-            repeat: -1,
-        });
-       
+        // All animations moved to character class (prefab file)
+    
     }
 }``

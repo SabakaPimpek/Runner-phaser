@@ -51,7 +51,7 @@ export default class Menu extends Phaser.Scene {
     update()
     {
         const cam = this.cameras.main;
-        cam.scrollX += 0.5;
+        cam.scrollX += 1;
 
         this.checkCurrentBackgroundItem(this);
     }
