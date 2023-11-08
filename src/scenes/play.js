@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import ObstacleSpawner from '../prefabs/ObstacleStawner';
 import Character from '../prefabs/character'
 import Text from '../ui/text';
+import LivesManager from '../ui/livesManager';
 
 import tile1JSON from '../tilemaps/tile1.json'
 
@@ -23,8 +24,11 @@ export default class Play extends Phaser.Scene {
         this.mapScale = 4.5;
 
         this.stats = {
-            points: 0
+            points: 0,
+            lives: new LivesManager(this)
         }
+
+        console.log(this.stats.lives);
     }
     
     preload ()
@@ -161,6 +165,11 @@ export default class Play extends Phaser.Scene {
             );
 
         this.screenText.points.setScrollFactor(0, 0);
+
+        // this.lives.update();
+        
+        
+        // this.lives.addLife();
     }
 
     updateUI()

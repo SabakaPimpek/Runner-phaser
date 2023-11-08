@@ -30,7 +30,7 @@ export default class Preload extends Phaser.Scene {
         this.load.image("plants", Plants);
         this.load.image("stone", Stone);
         this.load.image("swamp", Swamp);
-        this.load.image("spritesheet", Spritesheet);
+        // this.load.image("spritesheet", Spritesheet);
 
         this.load.audio("music_menu", menuAudio);
         this.load.audio("audio_jump", jumpAudio);
@@ -46,6 +46,15 @@ export default class Preload extends Phaser.Scene {
             {
                 frameWidth: 128,
                 frameHeight: 128,
+            }
+        )
+
+        this.load.spritesheet('spritesheet', Spritesheet,
+            {
+                frameWidth: 21,
+                frameHeight: 21,
+                margin: 3,
+                spacing: 2
             }
         )
 
