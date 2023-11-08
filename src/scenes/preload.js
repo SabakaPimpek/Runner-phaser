@@ -12,6 +12,7 @@ import Spritesheet from '../images/spritesheet.png'
 
 import menuAudio from '../music/menu.wav'
 import jumpAudio from '../music/Jump.wav'
+import hurtAudio from '../music/hurt.ogg'
 
 export default class Preload extends Phaser.Scene {
     
@@ -34,6 +35,7 @@ export default class Preload extends Phaser.Scene {
 
         this.load.audio("music_menu", menuAudio);
         this.load.audio("audio_jump", jumpAudio);
+        this.load.audio("audio_hurt", hurtAudio);
 
         this.load.spritesheet("character-run", Run,
             {

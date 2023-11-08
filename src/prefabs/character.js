@@ -8,6 +8,7 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
       scene.add.existing(this);
       scene.physics.add.existing(this);
       this.isInvincible = false;
+    //   this.setCollideWorldBounds(true);
         
       this.setUp();
       this.createAnimations();
@@ -57,6 +58,11 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
          if(this.character.body.onFloor())      
             {
                 this.character.setVelocityY(-800);
+                const musicConfig = {
+                     volume: 0.2
+                }
+         
+                this.sound.add('audio_jump').play(musicConfig);  
             }
     }
 

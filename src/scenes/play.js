@@ -68,6 +68,8 @@ export default class Play extends Phaser.Scene {
             }
         })
 
+        this.physics.world.setBounds(0, 500,2000, 300)
+
         this.input.on('pointerdown', this.character.Jump, this);
         
         let top = tile1.createLayer('Top', tileset, 0, 0).setScale(this.mapScale);
@@ -94,7 +96,8 @@ export default class Play extends Phaser.Scene {
     {
         if(tile.properties.damage && this.character.isInvincible === false)
         {
-            const cam = this.cameras.main;  
+            const cam = this.cameras.main;
+            this.sound.add('audio_hurt').play()
             this.stats.lives.removeLife();
             this.character.setInvincible(1000);
             cam.shake(100, 0.01);
