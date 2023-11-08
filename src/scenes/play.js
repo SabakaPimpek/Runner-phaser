@@ -27,8 +27,6 @@ export default class Play extends Phaser.Scene {
             points: 0,
             lives: new LivesManager(this)
         }
-
-        console.log(this.stats.lives);
     }
     
     preload ()
@@ -78,60 +76,32 @@ export default class Play extends Phaser.Scene {
         this.physics.add.collider(this.character, bot);
         bot.setCollisionByProperty({collide: true});
 
-        this.physics.add.collider(this.character, top, this.characterCollision, null, this);
-        top.setCollisionByProperty({collide: true});
-
-        // this.physics.add.overlap(this.character, top);
-        // top.setCollisionByProperty({damage: true});
-
-        
-
-
-        // bot.setCollisionByExclusion([-1]);
-        // this.physics.add.collider(this.player, bot);
-
-        
+        this.physics.add.overlap(this.character, top, this.characterCollision, null, this);
         top.setDepth(1);
-
-
     }
     
     update()
     {
-        const speed = 2;
         const cam = this.cameras.main;
-        cam.scrollX += speed;
-        this.character.x += speed;
+        cam.startFollow(this.character, true);
+        cam.setFollowOffset(-300, 0);
+        cam.setBounds(0,-195, Infinity, 500)
 
-        // this.checkCurrentBackgroundItem(this);
-        // this.checkCurrentGameItems();
         this.updateUI();
-        // this.ObstacleSpawner.CheckCameraPosition(cam);
     }
 
     characterCollision(character, tile) // If player sprite hits Obstacle, scene restarts
     {
-        // this.character.anims.stop();
-        // this.character.setCollideWorldBounds(false);
+        if(tile.properties.damage && this.character.isInvincible === false)
+        {
+            const cam = this.cameras.main;  
+            this.stats.lives.removeLife();
+            this.character.setInvincible(1000);
+            cam.shake(100, 0.01);
+        }
 
-        console.log(tile.properties);
-
-        // this.time.addEvent({
-        //     delay : 100,
-        //     callback: this.showGameOver,
-        //     callbackScope: this
-        // })
     }
 
-    // checkCurrentGameItems() // If item (obstacles, coins etc.) will go outside of left screen side it dissapears.
-    // {
-    //     const cam = this.cameras.main;
-
-    //    this.ObstacleSpawner.group.getChildren().forEach(e => {
-    //         if(cam.scrollX > e.x + e.width*2) e.destroy();
-    //    });
-    // }
-  
     checkCurrentBackgroundItem(scene) /* If background item (ground, mountains)
     is outside of the screen it dissapears and new same background item is created. */
     {

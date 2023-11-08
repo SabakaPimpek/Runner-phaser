@@ -26,25 +26,50 @@ export default class LivesManager {
         const spacing = 100;
         const margin = 50;
 
-        for(let i = 0; i < this.currentLives; i++)
+        for(let i = 0; i < this.maxLives; i++)
         {
-            const sprite = this.scene.add.sprite(this.scene.game.CONFIG.width - margin - (i * spacing), margin, spritesheetName, fullHeartID);
+            const sprite = this.scene.add.sprite(
+                this.scene.game.CONFIG.width - margin - (i * spacing),
+                margin,
+                spritesheetName,
+                fullHeartID
+            );
+
             sprite.setScrollFactor(0);
             sprite.setScale(4.5);
             sprite.setDepth(999999999999999);
 
-            this.group.create(sprite);
+            this.group.add(sprite);
         }
+    }
+
+    update()
+    {
+        const children = this.group.getChildren();
+        children.sort((a, b) => a.x - b.x);
+
+        for(let i = 0; i < children.length; i++)
+        {
+            if(i < this.currentLives) children[i].setTexture(spritesheetName, fullHeartID)
+            else children[i].setTexture(spritesheetName, EmptyHeartID)
+        }
+    
     }
 
     addLife()
     {
-
+        if(this.currentLives >= this.maxLives) return;
+        this.currentLives++;
+        this.update();
     }
 
     removeLife()
     {
-
+        if(this.currentLives > 0)
+        {
+            this.currentLives--;
+            this.update();
+        }
     }
 
     get group()

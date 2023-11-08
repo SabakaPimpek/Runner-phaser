@@ -7,6 +7,7 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
       this.scene = scene;
       scene.add.existing(this);
       scene.physics.add.existing(this);
+      this.isInvincible = false;
         
       this.setUp();
       this.createAnimations();
@@ -18,6 +19,7 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
       this.setDepth(9999);
       this.setOrigin(0.75, 0.75);
       this.setSize(64, 128, true);
+      this.setVelocityX(300);
     }
 
     createAnimations()
@@ -56,6 +58,24 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
             {
                 this.character.setVelocityY(-800);
             }
+    }
+
+    setInvincible(time = 500) // in milliseconds
+    {
+        if(this.isInvincible === false)
+        {
+            this.isInvincible = true;
+            this.scene.time.addEvent({
+                delay : time,
+                callback: this.removeInvincible,
+                callbackScope: this
+            })            
+        }
+    }
+
+    removeInvincible()
+    {
+        this.isInvincible = false;
     }
 
   }
