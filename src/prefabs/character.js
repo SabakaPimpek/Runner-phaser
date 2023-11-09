@@ -2,17 +2,17 @@ import Phaser from 'phaser'
 
 export default class Character extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y) {
-      super(scene, x, y, "character-run");
-  
-      this.scene = scene;
-      scene.add.existing(this);
-      scene.physics.add.existing(this);
-      this.isInvincible = false;
-      this.setCollideWorldBounds(true);
+        super(scene, x, y, "character-run");
         
-      this.setUp();
-      this.createAnimations();
-      this.createEvents();
+        this.scene = scene;
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+        this.isInvincible = false;
+        this.setCollideWorldBounds(true);
+        
+        this.setUp();
+        this.createAnimations();
+        // this.createEvents();
     }
     
     setUp()
@@ -40,17 +40,20 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
-    createEvents()
+    checkGround()
     {
-        this.scene.events.on('update', () => {
-            if (this.body.onFloor()) {
-                // Sprite jest na ziemi
-                this.play('character-run', true);
-            } else {
-                // Sprite jest w powietrzu
-                this.play('character-jump', true);
-            }
-        });
+        if (this.body.onFloor()) {
+            // Sprite jest na ziemi
+            this.play('character-run', true);
+        } else {
+            // Sprite jest w powietrzu
+            this.play('character-jump', true);
+        }
+    }
+
+    removeEvents()
+    {
+        this.scene.events.off('update');
     }
 
     Jump()

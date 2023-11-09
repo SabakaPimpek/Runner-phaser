@@ -104,6 +104,8 @@ export default class Play extends Phaser.Scene {
         }
         
         this.updateUI();
+
+        this.character.checkGround();
         
         // console.log(this.character.body);
     }
@@ -170,8 +172,6 @@ export default class Play extends Phaser.Scene {
     showGameOver()
     {
         this.scene.pause();
-
-
         this.screenText.points.setVisible(false);
 
         this.scene.launch('GameOver', { score:  this.stats.points})
