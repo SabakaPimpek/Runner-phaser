@@ -8,7 +8,7 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
       scene.add.existing(this);
       scene.physics.add.existing(this);
       this.isInvincible = false;
-    //   this.setCollideWorldBounds(true);
+      this.setCollideWorldBounds(true);
         
       this.setUp();
       this.createAnimations();
@@ -18,7 +18,7 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
     setUp()
     {
       this.setDepth(9999);
-      this.setOrigin(0.75, 0.75);
+      this.setOrigin(1,1);
       this.setSize(64, 128, true);
       this.setVelocityX(300);
     }

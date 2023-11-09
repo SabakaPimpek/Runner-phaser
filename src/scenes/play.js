@@ -22,7 +22,9 @@ export default class Play extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.character;
         this.mapScale = 4.5;
+        this.border = this.physics.world.bounds;
 
+        
         this.stats = {
             points: 0,
             lives: new LivesManager(this)
@@ -43,7 +45,7 @@ export default class Play extends Phaser.Scene {
         .setScrollFactor(0);
         
         this.createUI();
-
+        
         
         
         const cam = this.cameras.main;
@@ -65,21 +67,28 @@ export default class Play extends Phaser.Scene {
                         this.character = new Character(this, x * this.mapScale, y * this.mapScale);
                         break;
                     }
-            }
-        })
-
-        this.physics.world.setBounds(0, 500,2000, 300)
-
-        this.input.on('pointerdown', this.character.Jump, this);
+                }
+            })
+            
+            this.physics.world.setBounds(-2000, -1000,Infinity, 2700)
+            
+            this.input.on('pointerdown', this.character.Jump, this);
+            
+            let top = tile1.createLayer('Top', tileset, 0, 0).setScale(this.mapScale);
+            let bot = tile1.createLayer('Bot', tileset, 0, 0).setScale(this.mapScale);
+            
+            this.physics.add.collider(this.character, bot);
+            bot.setCollisionByProperty({collide: true});
+            
+            this.physics.add.overlap(this.character, top, this.characterCollision, null, this);
+            top.setDepth(1);
+            
+            // this.character.on('worldbounds', function() {
+                //     // Dodaj tutaj swoją reakcję na kolizję z granicami świata
+                //     console.log('Kolizja z granicą świata');
+                // });
+                
         
-        let top = tile1.createLayer('Top', tileset, 0, 0).setScale(this.mapScale);
-        let bot = tile1.createLayer('Bot', tileset, 0, 0).setScale(this.mapScale);
-
-        this.physics.add.collider(this.character, bot);
-        bot.setCollisionByProperty({collide: true});
-
-        this.physics.add.overlap(this.character, top, this.characterCollision, null, this);
-        top.setDepth(1);
     }
     
     update()
@@ -89,7 +98,14 @@ export default class Play extends Phaser.Scene {
         cam.setFollowOffset(-300, 0);
         cam.setBounds(0,-195, Infinity, 500)
 
+        if(this.character.y >= this.physics.world.bounds.bottom)
+        {
+            this.showGameOver();
+        }
+        
         this.updateUI();
+        
+        // console.log(this.character.body);
     }
 
     characterCollision(character, tile) // If player sprite hits Obstacle, scene restarts
