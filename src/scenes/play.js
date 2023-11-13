@@ -23,13 +23,16 @@ export default class Play extends Phaser.Scene {
         this.character;
         this.mapScale = 4.5;
         this.border = this.physics.world.bounds;
+        this.coinGroup = this.add.group();
 
         
         this.stats = {
             points: 0,
+            coins: 0,
             lives: new LivesManager(this)
         }
     }
+
     
     preload ()
     {
@@ -42,7 +45,8 @@ export default class Play extends Phaser.Scene {
         const height = this.game.config.height;
         
         this.add.image(width * 0.5, height * 0.5, 'sky')
-        .setScrollFactor(0);
+        .setScrollFactor(0)
+        .setScale(1.05);
         
         this.createUI();
         
@@ -60,23 +64,38 @@ export default class Play extends Phaser.Scene {
         objectsLayer.objects.forEach(objData => {
             const { x = 0, y = 0, name } = objData
             
-            switch (name)
-            {
-                case 'character-spawn':
+                switch (name)
+                {
+                    case 'character-spawn':
+                        {
+                            this.character = new Character(this, x * this.mapScale, y * this.mapScale);
+                            break;
+                        }
+                    case 'coin' : 
                     {
-                        this.character = new Character(this, x * this.mapScale, y * this.mapScale);
-                        break;
+                        const coin = this.physics.add.sprite(x * this.mapScale, y * this.mapScale, "spritesheet", 78);
+                        // coin.body.setImmovable(true);
+                        coin.setScale(this.mapScale);
+                        coin.body.setAllowGravity(false);
+                        coin.setDepth(999);
+                        coin.setSize(coin.width * 0.5, coin.height * 0.5)
+                        
+                        this.coinGroup.add(coin);
                     }
                 }
             })
+
+
             
-            this.physics.world.setBounds(-2000, -1000,Infinity, 2700)
+            this.physics.world.setBounds(-2000, -1000,Infinity, 2700);
             
             this.input.on('pointerdown', this.character.Jump, this);
             
             let top = tile1.createLayer('Top', tileset, 0, 0).setScale(this.mapScale);
             let bot = tile1.createLayer('Bot', tileset, 0, 0).setScale(this.mapScale);
             
+            this.physics.add.overlap(this.character, this.coinGroup, this.coinCollect, null, this)
+
             this.physics.add.collider(this.character, bot);
             bot.setCollisionByProperty({collide: true});
             
@@ -123,6 +142,17 @@ export default class Play extends Phaser.Scene {
 
     }
 
+    coinCollect(character, coin)
+    {
+        coin.destroy();
+        this.stats.coins++;
+        const musicConfig = {
+            volume: 0.2
+       }
+        this.sound.add('audio_coin').play(musicConfig)
+        console.log(this.stats.coins++);
+    }
+
     checkCurrentBackgroundItem(scene) /* If background item (ground, mountains)
     is outside of the screen it dissapears and new same background item is created. */
     {
@@ -156,16 +186,11 @@ export default class Play extends Phaser.Scene {
             );
 
         this.screenText.points.setScrollFactor(0, 0);
-
-        // this.lives.update();
-        
-        
-        // this.lives.addLife();
     }
 
     updateUI()
     {
-        this.stats.points = parseInt(this.cameras.main.scrollX/10);
+        this.stats.points = parseInt(this.cameras.main.scrollX/10 + this.stats.coins * 50);
         this.screenText.points.setText("Punkty: " + this.stats.points);
     }
 

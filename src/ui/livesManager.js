@@ -69,6 +69,10 @@ export default class LivesManager {
         {
             this.currentLives--;
             this.update();
+
+            if(this.currentLives <= 0)
+                this.scene.showGameOver();
+           
         }
     }
 

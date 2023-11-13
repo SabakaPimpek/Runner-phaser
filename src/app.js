@@ -38,7 +38,8 @@ export default class App {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    gravity: { y: 1200 }
+                    gravity: { y: 1200 },
+                    // debug: true
                 }
             },
             // scale: {
