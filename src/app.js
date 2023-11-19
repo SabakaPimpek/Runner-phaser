@@ -39,7 +39,7 @@ export default class App {
                 default: 'arcade',
                 arcade: {
                     gravity: { y: 1200 },
-                    // debug: true
+                    debug: true
                 }
             },
             // scale: {

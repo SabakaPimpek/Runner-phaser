@@ -81,16 +81,11 @@ export default class Menu extends Phaser.Scene {
 
     createMusic()
     {
+        this.sound.stopAll();
         this.music = this.sound.add("music_menu");
 
         const musicConfig = {
-             mute: false,
-             volume: 1,
-             rate: 1,
-             detune: 0,
-             seek: 0,
-             loop: true,
-             delay: 0
+             loop: true
         }
  
         this.music.play(musicConfig); 

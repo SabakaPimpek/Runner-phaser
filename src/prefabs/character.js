@@ -5,21 +5,26 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, "character-run");
         
         this.scene = scene;
+     
+        this.jumpCount = 0
+        this.JumpMaxCount = 2;
+        this.isInvincible = false;
+
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.isInvincible = false;
         this.setCollideWorldBounds(true);
         
         this.setUp();
         this.createAnimations();
         // this.createEvents();
+
     }
     
     setUp()
     {
       this.setDepth(9999);
       this.setOrigin(1,1);
-      this.setSize(64, 128, true);
+      this.setSize(56, 128, true);
       this.setVelocityX(300);
     }
 
@@ -42,9 +47,12 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
 
     checkGround()
     {
-        if (this.body.onFloor()) {
+        // this.setVelocityX(300);
+
+        if (this.body.onFloor() && this.body.velocity.y === 0) {
             // Sprite jest na ziemi
             this.play('character-run', true);
+            this.jumpCount = 0;
         } else {
             // Sprite jest w powietrzu
             this.play('character-jump', true);
@@ -56,11 +64,13 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
         this.scene.events.off('update');
     }
 
-    Jump()
+    Jump() // This function is called in Play scene and needs to use this.character
     {
-         if(this.character.body.onFloor())      
-            {
-                this.character.setVelocityY(-800);
+
+         if(this.character.jumpCount < this.character.JumpMaxCount)      
+         {
+                this.character.jumpCount++;
+                this.character.setVelocityY(-700);
                 const musicConfig = {
                      volume: 0.2
                 }
@@ -86,5 +96,7 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
     {
         this.isInvincible = false;
     }
+
+    // setPosition()
 
   }

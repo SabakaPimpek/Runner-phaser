@@ -4,7 +4,8 @@ import Character from '../prefabs/character'
 import Text from '../ui/text';
 import LivesManager from '../ui/livesManager';
 
-import tile1JSON from '../tilemaps/tile1.json'
+
+const tilemapList = ["tile1", "tile2"];
 
 export default class Play extends Phaser.Scene {
     
@@ -20,10 +21,11 @@ export default class Play extends Phaser.Scene {
         this.ObstacleSpawner = undefined;
         this.screenText = {};
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.character;
+        this.character = new Character(this, 200, 0);
         this.mapScale = 4.5;
         this.border = this.physics.world.bounds;
         this.coinGroup = this.add.group();
+        this.tilemapGroup = this.add.group();
 
         
         this.stats = {
@@ -36,7 +38,7 @@ export default class Play extends Phaser.Scene {
     
     preload ()
     {
-        this.load.tilemapTiledJSON("tile1", tile1JSON);
+       
     }
     
     create()
@@ -46,67 +48,39 @@ export default class Play extends Phaser.Scene {
         
         this.add.image(width * 0.5, height * 0.5, 'sky')
         .setScrollFactor(0)
-        .setScale(1.05);
+        .setScale(1.05)
+        .setDepth(-999);
         
         this.createUI();
         
-        
+        this.createTilemap("tile1", 0);
+        this.createTilemap("tile2", 1);
+        this.createTilemap("tile1", 2);
+        this.createTilemap("tile2", 3);
+        this.createTilemap("tile1", 4);
+        this.createTilemap("tile2", 5);
+
+        // for(let i = 6; i <= 300; i++)
+        // {
+        //     this.createTilemap("tile1", i)
+        // }
         
         const cam = this.cameras.main;
         cam.scrollY -= 200;
+
+        // this.backgroundItems = [
+        //     createAligned(this, 2, 'mountains', 0.25)
+        // ]
         
         //layers
-        const tile1 = this.make.tilemap({ key: 'tile1' });
-        const tileset = tile1.addTilesetImage('spritesheet', 'spritesheet');
-        
-        const objectsLayer = tile1.getObjectLayer('Objects');
-        
-        objectsLayer.objects.forEach(objData => {
-            const { x = 0, y = 0, name } = objData
-            
-                switch (name)
-                {
-                    case 'character-spawn':
-                        {
-                            this.character = new Character(this, x * this.mapScale, y * this.mapScale);
-                            break;
-                        }
-                    case 'coin' : 
-                    {
-                        const coin = this.physics.add.sprite(x * this.mapScale, y * this.mapScale, "spritesheet", 78);
-                        // coin.body.setImmovable(true);
-                        coin.setScale(this.mapScale);
-                        coin.body.setAllowGravity(false);
-                        coin.setDepth(999);
-                        coin.setSize(coin.width * 0.5, coin.height * 0.5)
-                        
-                        this.coinGroup.add(coin);
-                    }
-                }
-            })
-
-
-            
-            this.physics.world.setBounds(-2000, -1000,Infinity, 2700);
-            
-            this.input.on('pointerdown', this.character.Jump, this);
-            
-            let top = tile1.createLayer('Top', tileset, 0, 0).setScale(this.mapScale);
-            let bot = tile1.createLayer('Bot', tileset, 0, 0).setScale(this.mapScale);
-            
-            this.physics.add.overlap(this.character, this.coinGroup, this.coinCollect, null, this)
-
-            this.physics.add.collider(this.character, bot);
-            bot.setCollisionByProperty({collide: true});
-            
-            this.physics.add.overlap(this.character, top, this.characterCollision, null, this);
-            top.setDepth(1);
             
             // this.character.on('worldbounds', function() {
                 //     // Dodaj tutaj swoją reakcję na kolizję z granicami świata
                 //     console.log('Kolizja z granicą świata');
                 // });
                 
+                this.input.on('pointerdown', this.character.Jump, this);
+                this.physics.world.setBounds(-2000, -1000,Infinity, 2700);
         
     }
     
@@ -117,7 +91,7 @@ export default class Play extends Phaser.Scene {
         cam.setFollowOffset(-300, 0);
         cam.setBounds(0,-195, Infinity, 500)
 
-        if(this.character.y >= this.physics.world.bounds.bottom)
+        if(this.character.y >= this.physics.world.bounds.bottom - 600)
         {
             this.showGameOver();
         }
@@ -125,6 +99,8 @@ export default class Play extends Phaser.Scene {
         this.updateUI();
 
         this.character.checkGround();
+
+        // this.checkCurrentBackgroundItem();
         
         // console.log(this.character.body);
     }
@@ -194,6 +170,55 @@ export default class Play extends Phaser.Scene {
         this.screenText.points.setText("Punkty: " + this.stats.points);
     }
 
+    createTilemap(tileName, c)
+    {
+        const p = 4725;
+        
+        const i = p*c;
+
+        const tile1 = this.make.tilemap({ key: tileName });
+        const tileset = tile1.addTilesetImage('spritesheet', 'spritesheet');
+        
+        const objectsLayer = tile1.getObjectLayer('Objects');
+        
+        objectsLayer.objects.forEach(objData => {
+            const { x = 0, y = 0, name } = objData
+            
+                switch (name)
+                {
+                    case 'character-spawn':
+                        {
+                            // this.character.setPosition( x * this.mapScale, y * this.mapScale)
+                            break;
+                        }
+                    case 'coin' : 
+                    {
+                        const coin = this.physics.add.sprite(x * this.mapScale + i, y * this.mapScale, "spritesheet", 78);
+                        // coin.body.setImmovable(true);
+                        coin.setScale(this.mapScale);
+                        coin.body.setAllowGravity(false);
+                        coin.setDepth(999);
+                        coin.setSize(coin.width * 0.5, coin.height * 0.5)
+                        
+                        this.coinGroup.add(coin);
+                    }
+                }
+            })
+            
+            let top = tile1.createLayer('Top', tileset, 0 + i, 0).setScale(this.mapScale);
+            let bot = tile1.createLayer('Bot', tileset, 0 + i, 0).setScale(this.mapScale);
+            
+            this.physics.add.overlap(this.character, this.coinGroup, this.coinCollect, null, this)
+            
+            this.physics.add.collider(this.character, bot);
+            bot.setCollisionByProperty({collide: true});
+            
+            this.physics.add.overlap(this.character, top, this.characterCollision, null, this);
+            top.setDepth(1);
+
+            console.log(tile1.widthInPixels * this.mapScale);
+    }
+
     showGameOver()
     {
         this.scene.pause();
@@ -254,10 +279,10 @@ const createAligned = (scene, count, texture, scrollFactor) => {
     let group = [];
     for (let i = 0; i < count; ++i)
     {
-        const m = scene.add.image(x, scene.game.config.height, texture)
+        const m = scene.add.image(x, scene.game.config.height + 200, texture)
             .setOrigin(0, 1)
             .setScrollFactor(scrollFactor)
-            .setDepth(scrollFactor * 100)
+            .setDepth(scrollFactor - 100)
 
         x += m.width;
         group.push(m);

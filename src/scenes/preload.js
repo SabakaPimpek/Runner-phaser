@@ -15,6 +15,9 @@ import jumpAudio from '../music/Jump.wav'
 import hurtAudio from '../music/hurt.ogg'
 import coinPickupAudio from '../music/Pickup_Coin.wav'
 
+import tile1JSON from '../tilemaps/tile1.json'
+import tile2JSON from '../tilemaps/tile2.json'
+
 export default class Preload extends Phaser.Scene {
     
     constructor (game)
@@ -33,12 +36,15 @@ export default class Preload extends Phaser.Scene {
         this.load.image("stone", Stone);
         this.load.image("swamp", Swamp);
         // this.load.image("spritesheet", Spritesheet);
-
+        
         this.load.audio("music_menu", menuAudio);
         this.load.audio("audio_jump", jumpAudio);
         this.load.audio("audio_hurt", hurtAudio);
         this.load.audio("audio_coin", coinPickupAudio);
 
+        this.load.tilemapTiledJSON("tile1", tile1JSON);
+        this.load.tilemapTiledJSON("tile2", tile2JSON);
+        
         this.load.spritesheet("character-run", Run,
             {
                 frameWidth: 128,
