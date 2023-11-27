@@ -2,15 +2,17 @@
   "name": "runner-phaser",
   "version": "1.0.0",
   "description": "",
-  "homepage": ".",
+  "homepage": "https://sabakapimpek.github.io/Runner-phaser/",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel src/index.html"
+    "start": "parcel src/index.html",
+    "deploy": "gh-pages -d dist"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "gh-pages": "^6.1.0",
     "phaser": "^3.60.0",
     "style.css": "^1.0.3"
   },
