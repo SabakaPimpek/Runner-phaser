@@ -25,8 +25,7 @@ export default class Play extends Phaser.Scene {
         this.mapScale = 4.5;
         this.border = this.physics.world.bounds;
         this.coinGroup = this.add.group();
-        this.tilemapGroup = this.add.group();
-
+        this.tilemapGroup = [];
         
         this.stats = {
             points: 0,
@@ -52,36 +51,21 @@ export default class Play extends Phaser.Scene {
         .setDepth(-999);
         
         this.createUI();
-        
-        this.createTilemap("tile1", 0);
-        this.createTilemap("tile2", 1);
-        this.createTilemap("tile1", 2);
-        this.createTilemap("tile2", 3);
-        this.createTilemap("tile1", 4);
-        this.createTilemap("tile2", 5);
 
-        // for(let i = 6; i <= 300; i++)
-        // {
-        //     this.createTilemap("tile1", i)
-        // }
+        this.physics.add.collider(this.character, this.tilemapGroup)
         
+        const firstTilemap = this.randomizeTilemap();
+        const secondTilemap = this.randomizeTilemap();
+
+        this.createTilemap(firstTilemap);
+        this.createTilemap(secondTilemap);
+
         const cam = this.cameras.main;
         cam.scrollY -= 200;
-
-        // this.backgroundItems = [
-        //     createAligned(this, 2, 'mountains', 0.25)
-        // ]
-        
-        //layers
-            
-            // this.character.on('worldbounds', function() {
-                //     // Dodaj tutaj swoją reakcję na kolizję z granicami świata
-                //     console.log('Kolizja z granicą świata');
-                // });
                 
-                this.input.on('pointerdown', this.character.Jump, this);
-                this.physics.world.setBounds(-2000, -1000,Infinity, 2700);
-        
+        this.input.on('pointerdown', this.character.Jump, this);
+        this.physics.world.setBounds(-2000, -1000,Infinity, 2700);
+
     }
     
     update()
@@ -100,9 +84,7 @@ export default class Play extends Phaser.Scene {
 
         this.character.checkGround();
 
-        // this.checkCurrentBackgroundItem();
-        
-        // console.log(this.character.body);
+        this.checkCurrentTilemap();
     }
 
     characterCollision(character, tile) // If player sprite hits Obstacle, scene restarts
@@ -112,7 +94,7 @@ export default class Play extends Phaser.Scene {
             const cam = this.cameras.main;
             this.sound.add('audio_hurt').play()
             this.stats.lives.removeLife();
-            this.character.setInvincible(1000);
+            this.character.setInvincible();
             cam.shake(100, 0.01);
         }
 
@@ -126,7 +108,6 @@ export default class Play extends Phaser.Scene {
             volume: 0.2
        }
         this.sound.add('audio_coin').play(musicConfig)
-        console.log(this.stats.coins++);
     }
 
     checkCurrentBackgroundItem(scene) /* If background item (ground, mountains)
@@ -170,16 +151,51 @@ export default class Play extends Phaser.Scene {
         this.screenText.points.setText("Punkty: " + this.stats.points);
     }
 
-    createTilemap(tileName, c)
-    {
-        const p = 4725;
-        
-        const i = p*c;
+    checkCurrentTilemap() {
+        const cam = this.cameras.main;
 
-        const tile1 = this.make.tilemap({ key: tileName });
-        const tileset = tile1.addTilesetImage('spritesheet', 'spritesheet');
+        this.tilemapGroup.forEach((e, index)=> { // Checks every background image
+            
+               if(e.tilemapWidth + e.x + 50 < cam.scrollX)
+               {
+                   this.destroyTilemap(index);
+
+                   const tilemapName = this.randomizeTilemap();
+
+                   this.createTilemap(tilemapName);
+
+                   console.log(this.tilemapGroup);
+
+               }
         
-        const objectsLayer = tile1.getObjectLayer('Objects');
+            }
+        );
+
+        this.coinGroup.children.each((obj) => {
+            if(cam.scrollX > obj.x + this.game.config.width + obj.width + 1 )
+            {
+                obj.destroy();
+            }
+        })
+        
+    }
+
+    randomizeTilemap() {
+        const number = Phaser.Math.Between(0, tilemapList.length - 1)
+        return tilemapList[number];
+    }
+
+    createTilemap(tileName)
+    {
+        let xPos = 0;
+        const lastTilemap = this.tilemapGroup[this.tilemapGroup.length-1]
+
+        if(this.tilemapGroup.length > 0) xPos = lastTilemap.tilemapWidth + lastTilemap.x;
+
+        const tilemap = this.make.tilemap({ key: tileName });
+        const tileset = tilemap.addTilesetImage('spritesheet', 'spritesheet');
+        
+        const objectsLayer = tilemap.getObjectLayer('Objects');
         
         objectsLayer.objects.forEach(objData => {
             const { x = 0, y = 0, name } = objData
@@ -188,35 +204,61 @@ export default class Play extends Phaser.Scene {
                 {
                     case 'character-spawn':
                         {
-                            // this.character.setPosition( x * this.mapScale, y * this.mapScale)
+                            if(xPos === 0)
+                            {
+                                this.character.setPosition(x * this.mapScale, y * this.mapScale)
+                            }
                             break;
                         }
                     case 'coin' : 
                     {
-                        const coin = this.physics.add.sprite(x * this.mapScale + i, y * this.mapScale, "spritesheet", 78);
+                        const coin = this.physics.add.sprite(xPos + x * this.mapScale, y * this.mapScale, "spritesheet", 78);
                         // coin.body.setImmovable(true);
                         coin.setScale(this.mapScale);
                         coin.body.setAllowGravity(false);
                         coin.setDepth(999);
-                        coin.setSize(coin.width * 0.5, coin.height * 0.5)
+                        coin.setSize(coin.width * 0.5, coin.height * 0.5);
                         
                         this.coinGroup.add(coin);
                     }
                 }
             })
             
-            let top = tile1.createLayer('Top', tileset, 0 + i, 0).setScale(this.mapScale);
-            let bot = tile1.createLayer('Bot', tileset, 0 + i, 0).setScale(this.mapScale);
+            let topLayer = tilemap.createLayer('Top', tileset, 0 + xPos, 0).setScale(this.mapScale);
+            let botLayer = tilemap.createLayer('Bot', tileset, 0 + xPos, 0).setScale(this.mapScale);
             
             this.physics.add.overlap(this.character, this.coinGroup, this.coinCollect, null, this)
-            
-            this.physics.add.collider(this.character, bot);
-            bot.setCollisionByProperty({collide: true});
-            
-            this.physics.add.overlap(this.character, top, this.characterCollision, null, this);
-            top.setDepth(1);
 
-            console.log(tile1.widthInPixels * this.mapScale);
+            const topCollider = this.physics.add.collider(this.character, botLayer);
+            botLayer.setCollisionByProperty({collide: true});
+            
+            const botCollider = this.physics.add.overlap(this.character, topLayer, this.characterCollision, null, this);
+            topLayer.setDepth(1);
+
+            const tilemapWidth = tilemap.widthInPixels * this.mapScale;
+
+                this.tilemapGroup.push({
+                    x: xPos,
+                    tilemapWidth,
+                    tilemap,
+                    topLayer,
+                    botLayer,
+                    colliders: [
+                        topCollider,
+                        botCollider
+                    ]
+                });
+
+    }
+
+    destroyTilemap(index)
+    {
+        this.tilemapGroup[index].colliders.forEach(element => {
+            element.destroy();
+        });
+        this.tilemapGroup[index].tilemap.destroy();
+
+        this.tilemapGroup.splice(index, 1)
     }
 
     showGameOver()
@@ -241,8 +283,6 @@ export default class Play extends Phaser.Scene {
     {
         this.closeGameOver();
         this.goMenu();
-
-        console.log(this);
     }
 
     handleTryAgain()

@@ -88,7 +88,7 @@ export default class Menu extends Phaser.Scene {
              loop: true
         }
  
-        this.music.play(musicConfig); 
+        // this.music.play(musicConfig); 
     }
 
     createMouseInput() {
