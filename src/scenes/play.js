@@ -77,7 +77,12 @@ export default class Play extends Phaser.Scene {
 
         if(this.character.y >= this.physics.world.bounds.bottom - 600)
         {
-            this.showGameOver();
+            const cam = this.cameras.main;
+            this.sound.add('audio_hurt').play()
+            this.stats.lives.removeLife();
+            this.character.setInvincible(1500);
+            cam.shake(100, 0.01);
+            this.character.setY(0);
         }
         
         this.updateUI();

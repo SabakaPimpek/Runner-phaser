@@ -71,7 +71,10 @@ export default class LivesManager {
             this.update();
 
             if(this.currentLives <= 0)
+            {
+                this.scene.character.setVisible(false);
                 this.scene.showGameOver();
+            }
            
         }
     }

@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel src/index.html",
+    "start": "parcel src/index.html --public-url /Runner-phaser/",
     "deploy": "gh-pages -d dist"
   },
   "author": "",

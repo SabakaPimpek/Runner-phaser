@@ -98,7 +98,7 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
                 targets: this,
                 alpha: 0.3,
                 ease: 'Cubic.easeOut',  
-                duration: time / 7,
+                duration: time / 8,
                 repeat: 3,
                 yoyo: true
               })
