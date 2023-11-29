@@ -56,5 +56,5 @@ window.onload = function () {
     }
 
     // Launch the Game
-    runApp();
+    runApp();   
 }

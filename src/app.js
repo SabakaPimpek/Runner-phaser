@@ -42,9 +42,10 @@ export default class App {
                     // debug: true
                 }
             },
-            // scale: {
-            //     mode: Phaser.Scale.LINEAR
-            // }
+            scale: {
+                // mode: Phaser.Scale.LINEAR
+                // autoCenter: Phaser.Scale.CENTER_BOTH
+            }
         }
 
         // CREATE GAME APP

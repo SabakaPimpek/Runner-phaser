@@ -28,6 +28,13 @@ export default class Preload extends Phaser.Scene {
     
     preload ()
     {
+        this.bg = this.add.graphics({ x: 0, y: 0});
+        this.bg.fillStyle('0xF4CCA1', 1);
+        this.bg.fillRect(0, 0, this.game.CONFIG.width, this.game.CONFIG.height);
+
+        this.createLoadingBar()
+
+
         this.load.image("sky", Sky);
         this.load.image("mountains", Mountains);
         this.load.image("plateau", Plateau);
@@ -74,7 +81,6 @@ export default class Preload extends Phaser.Scene {
     {
         // Create sprite animations
         this.createAllAnims();
-        this.createLoadingBar();
 
         //Go to menu
         this.time.addEvent({
