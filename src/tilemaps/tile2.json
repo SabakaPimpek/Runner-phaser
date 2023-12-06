@@ -191,6 +191,39 @@
                  "width":0,
                  "x":154.666666666667,
                  "y":94.6666666666667
+                }, 
+                {
+                 "height":10.5,
+                 "id":55,
+                 "name":"spikes",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":42,
+                 "x":357,
+                 "y":73.5
+                }, 
+                {
+                 "height":10.5,
+                 "id":57,
+                 "name":"spikes",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":42,
+                 "x":861,
+                 "y":73.5
+                }, 
+                {
+                 "height":10.5,
+                 "id":59,
+                 "name":"spikes",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":21,
+                 "x":966,
+                 "y":73.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -199,7 +232,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":52,
+ "nextobjectid":61,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -849,20 +882,6 @@
                         }]
                 }, 
                 {
-                 "id":70,
-                 "properties":[
-                        {
-                         "name":"collide",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"damage",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
                  "id":71,
                  "properties":[
                         {
@@ -1127,8 +1146,7 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":100,
                  "properties":[
@@ -1137,7 +1155,8 @@
                          "type":"bool",
                          "value":false
                         }]
-                }, 
+                },
+            
                 {
                  "id":101,
                  "properties":[
@@ -1578,8 +1597,7 @@
                          "type":"bool",
                          "value":false
                         }]
-                },
-            
+                }, 
                 {
                  "id":150,
                  "properties":[
@@ -1588,7 +1606,8 @@
                          "type":"bool",
                          "value":true
                         }]
-                }, 
+                },
+            
                 {
                  "id":151,
                  "properties":[
@@ -2029,8 +2048,7 @@
                          "type":"bool",
                          "value":false
                         }]
-                },
-            
+                }, 
                 {
                  "id":200,
                  "properties":[
@@ -2039,7 +2057,8 @@
                          "type":"bool",
                          "value":false
                         }]
-                }, 
+                },
+            
                 {
                  "id":201,
                  "properties":[
@@ -2480,8 +2499,7 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":250,
                  "properties":[
@@ -2490,7 +2508,8 @@
                          "type":"bool",
                          "value":false
                         }]
-                }, 
+                },
+            
                 {
                  "id":251,
                  "properties":[
@@ -2931,8 +2950,7 @@
                          "type":"bool",
                          "value":false
                         }]
-                },
-            
+                }, 
                 {
                  "id":300,
                  "properties":[
@@ -2941,7 +2959,8 @@
                          "type":"bool",
                          "value":true
                         }]
-                }, 
+                },
+            
                 {
                  "id":301,
                  "properties":[
@@ -3382,8 +3401,7 @@
                          "type":"bool",
                          "value":false
                         }]
-                },
-            
+                }, 
                 {
                  "id":350,
                  "properties":[
@@ -3392,7 +3410,8 @@
                          "type":"bool",
                          "value":false
                         }]
-                }, 
+                },
+            
                 {
                  "id":351,
                  "properties":[
@@ -3833,8 +3852,7 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":400,
                  "properties":[
@@ -3843,7 +3861,8 @@
                          "type":"bool",
                          "value":true
                         }]
-                }, 
+                },
+            
                 {
                  "id":401,
                  "properties":[
@@ -4284,8 +4303,7 @@
                          "type":"bool",
                          "value":false
                         }]
-                },
-            
+                }, 
                 {
                  "id":450,
                  "properties":[
@@ -4294,7 +4312,8 @@
                          "type":"bool",
                          "value":false
                         }]
-                }, 
+                },
+            
                 {
                  "id":451,
                  "properties":[

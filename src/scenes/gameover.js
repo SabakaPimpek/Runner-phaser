@@ -58,9 +58,6 @@ export default class GameOver extends Phaser.Scene
         )
 
         //... Text for menu button
-
-        console.log(this.btn_menu);
-
         
         this.lbl_menu = new Text(
             this,

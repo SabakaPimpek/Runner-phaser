@@ -9,7 +9,7 @@ import GameOver from './scenes/gameover';
 export default class App {
 
     constructor() {
-        this.VERSION = '0.0.1';
+        this.VERSION = '0.0.2';
         this.IS_DEV = true;
     }
 

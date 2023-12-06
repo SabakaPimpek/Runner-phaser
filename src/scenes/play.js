@@ -25,6 +25,7 @@ export default class Play extends Phaser.Scene {
         this.mapScale = 4.5;
         this.border = this.physics.world.bounds;
         this.coinGroup = this.add.group();
+        this.spikeGroup = this.add.group();
         this.tilemapGroup = [];
         
         this.stats = {
@@ -52,7 +53,7 @@ export default class Play extends Phaser.Scene {
         
         this.createUI();
 
-        this.physics.add.collider(this.character, this.tilemapGroup)
+        // this.physics.add.collider(this.character, this.tilemapGroup)
         
         const firstTilemap = this.randomizeTilemap();
         const secondTilemap = this.randomizeTilemap();
@@ -65,6 +66,9 @@ export default class Play extends Phaser.Scene {
                 
         this.input.on('pointerdown', this.character.Jump, this);
         this.physics.world.setBounds(-2000, -1000,Infinity, 2700);
+
+        this.physics.add.overlap(this.character, this.coinGroup, this.coinCollect, null, this);
+        this.physics.add.overlap(this.character, this.spikeGroup, this.characterCollision, null, this);
 
     }
     
@@ -94,15 +98,14 @@ export default class Play extends Phaser.Scene {
 
     characterCollision(character, tile) // If player sprite hits Obstacle, scene restarts
     {
-        if(tile.properties.damage && this.character.isInvincible === false)
-        {
+       if(!character.isInvincible)
+       {
             const cam = this.cameras.main;
             this.sound.add('audio_hurt').play()
             this.stats.lives.removeLife();
-            this.character.setInvincible();
+            character.setInvincible();
             cam.shake(100, 0.01);
-        }
-
+       }
     }
 
     coinCollect(character, coin)
@@ -168,21 +171,9 @@ export default class Play extends Phaser.Scene {
                    const tilemapName = this.randomizeTilemap();
 
                    this.createTilemap(tilemapName);
-
-                   console.log(this.tilemapGroup);
-
                }
-        
             }
         );
-
-        this.coinGroup.children.each((obj) => {
-            if(cam.scrollX > obj.x + this.game.config.width + obj.width + 1 )
-            {
-                obj.destroy();
-            }
-        })
-        
     }
 
     randomizeTilemap() {
@@ -203,7 +194,7 @@ export default class Play extends Phaser.Scene {
         const objectsLayer = tilemap.getObjectLayer('Objects');
         
         objectsLayer.objects.forEach(objData => {
-            const { x = 0, y = 0, name } = objData
+            const { x = 0, y = 0, name, width = 0, height = 0 } = objData
             
                 switch (name)
                 {
@@ -225,19 +216,29 @@ export default class Play extends Phaser.Scene {
                         coin.setSize(coin.width * 0.5, coin.height * 0.5);
                         
                         this.coinGroup.add(coin);
+                        break;
+                    }
+                    case 'spikes' :
+                    {
+                        const spike = this.add.rectangle(xPos + x * this.mapScale, y * this.mapScale, width, height, 0x6666ff);
+                        this.physics.add.existing(spike);
+                        spike.setScale(this.mapScale);
+                        spike.setAlpha(0);
+                        spike.body.setAllowGravity(false);
+                        spike.setOrigin(0,0);
+                        
+                        this.spikeGroup.add(spike);
+
+                        break;
                     }
                 }
             })
             
             let topLayer = tilemap.createLayer('Top', tileset, 0 + xPos, 0).setScale(this.mapScale);
-            let botLayer = tilemap.createLayer('Bot', tileset, 0 + xPos, 0).setScale(this.mapScale);
-            
-            this.physics.add.overlap(this.character, this.coinGroup, this.coinCollect, null, this)
+            let botLayer = tilemap.createLayer('Bot', tileset, 0 + xPos, 0).setScale(this.mapScale); 
 
-            const topCollider = this.physics.add.collider(this.character, botLayer);
+            const botCollider = this.physics.add.collider(this.character, botLayer);
             botLayer.setCollisionByProperty({collide: true});
-            
-            const botCollider = this.physics.add.overlap(this.character, topLayer, this.characterCollision, null, this);
             topLayer.setDepth(1);
 
             const tilemapWidth = tilemap.widthInPixels * this.mapScale;
@@ -249,7 +250,6 @@ export default class Play extends Phaser.Scene {
                     topLayer,
                     botLayer,
                     colliders: [
-                        topCollider,
                         botCollider
                     ]
                 });
@@ -258,12 +258,28 @@ export default class Play extends Phaser.Scene {
 
     destroyTilemap(index)
     {
+        const cam = this.cameras.main;
+
         this.tilemapGroup[index].colliders.forEach(element => {
             element.destroy();
         });
         this.tilemapGroup[index].tilemap.destroy();
 
         this.tilemapGroup.splice(index, 1)
+
+        this.coinGroup.children.each((obj) => {
+            if(cam.scrollX > obj.x + this.game.config.width + obj.width + 1 )
+            {
+                obj.destroy();
+            }
+        })
+
+        this.spikeGroup.children.each((obj) => {
+            if(cam.scrollX > obj.x + this.game.config.width + obj.width + 1 )
+            {
+                obj.destroy();
+            }
+        })
     }
 
     showGameOver()
