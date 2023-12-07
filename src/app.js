@@ -5,6 +5,7 @@ import Preload from './scenes/preload'
 import Menu from './ui/menu'
 import Play from './scenes/play'
 import GameOver from './scenes/gameover';
+import playUI from './scenes/playUI';
 
 export default class App {
 
@@ -22,7 +23,8 @@ export default class App {
             scenes.push(Menu);
             scenes.push(Play);
             scenes.push(GameOver);
-
+            scenes.push(playUI);
+            
             
             
             // GAME CONFIG

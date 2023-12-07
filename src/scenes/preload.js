@@ -17,6 +17,7 @@ import coinPickupAudio from '../music/Pickup_Coin.wav'
 
 import tile1JSON from '../tilemaps/tile1.json'
 import tile2JSON from '../tilemaps/tile2.json'
+import tile3JSON from '../tilemaps/tile3.json'
 
 export default class Preload extends Phaser.Scene {
     
@@ -51,6 +52,7 @@ export default class Preload extends Phaser.Scene {
 
         this.load.tilemapTiledJSON("tile1", tile1JSON);
         this.load.tilemapTiledJSON("tile2", tile2JSON);
+        this.load.tilemapTiledJSON("tile3", tile3JSON);
         
         this.load.spritesheet("character-run", Run,
             {

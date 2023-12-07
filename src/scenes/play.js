@@ -1,11 +1,8 @@
 import Phaser from 'phaser';
 import ObstacleSpawner from '../prefabs/ObstacleStawner';
 import Character from '../prefabs/character'
-import Text from '../ui/text';
 import LivesManager from '../ui/livesManager';
-
-
-const tilemapList = ["tile1", "tile2"];
+import tilemapManager from '../prefabs/tilemapManager';
 
 export default class Play extends Phaser.Scene {
     
@@ -19,14 +16,13 @@ export default class Play extends Phaser.Scene {
     init()
     {
         this.ObstacleSpawner = undefined;
-        this.screenText = {};
         this.cursors = this.input.keyboard.createCursorKeys();
         this.character = new Character(this, 200, 0);
-        this.mapScale = 4.5;
         this.border = this.physics.world.bounds;
         this.coinGroup = this.add.group();
         this.spikeGroup = this.add.group();
-        this.tilemapGroup = [];
+
+        this.tilemapManager = new tilemapManager(this, 4.5);
         
         this.stats = {
             points: 0,
@@ -51,16 +47,8 @@ export default class Play extends Phaser.Scene {
         .setScale(1.05)
         .setDepth(-999);
         
-        this.createUI();
-
         // this.physics.add.collider(this.character, this.tilemapGroup)
-        
-        const firstTilemap = this.randomizeTilemap();
-        const secondTilemap = this.randomizeTilemap();
-
-        this.createTilemap(firstTilemap);
-        this.createTilemap(secondTilemap);
-
+    
         const cam = this.cameras.main;
         cam.scrollY -= 200;
                 
@@ -70,6 +58,7 @@ export default class Play extends Phaser.Scene {
         this.physics.add.overlap(this.character, this.coinGroup, this.coinCollect, null, this);
         this.physics.add.overlap(this.character, this.spikeGroup, this.characterCollision, null, this);
 
+        this.scene.launch('playUI', { stats:  this.stats})
     }
     
     update()
@@ -89,12 +78,12 @@ export default class Play extends Phaser.Scene {
             this.character.setY(0);
         }
         
-        this.updateUI();
-
         this.character.checkGround();
 
-        this.checkCurrentTilemap();
+        this.tilemapManager.checkCurrentTilemap();
     }
+
+// Methods ------------------------------------------------------------------------------------------------------
 
     characterCollision(character, tile) // If player sprite hits Obstacle, scene restarts
     {
@@ -140,152 +129,11 @@ export default class Play extends Phaser.Scene {
         });
     }
 
-    createUI() { // Generates Text for points
-        this.screenText.points = new Text(
-            this,
-            20,
-            20,
-            'Punkty: 0',
-            'title',
-            0
-            );
-
-        this.screenText.points.setScrollFactor(0, 0);
-    }
-
-    updateUI()
-    {
-        this.stats.points = parseInt(this.cameras.main.scrollX/10 + this.stats.coins * 50);
-        this.screenText.points.setText("Punkty: " + this.stats.points);
-    }
-
-    checkCurrentTilemap() {
-        const cam = this.cameras.main;
-
-        this.tilemapGroup.forEach((e, index)=> { // Checks every background image
-            
-               if(e.tilemapWidth + e.x + 50 < cam.scrollX)
-               {
-                   this.destroyTilemap(index);
-
-                   const tilemapName = this.randomizeTilemap();
-
-                   this.createTilemap(tilemapName);
-               }
-            }
-        );
-    }
-
-    randomizeTilemap() {
-        const number = Phaser.Math.Between(0, tilemapList.length - 1)
-        return tilemapList[number];
-    }
-
-    createTilemap(tileName)
-    {
-        let xPos = 0;
-        const lastTilemap = this.tilemapGroup[this.tilemapGroup.length-1]
-
-        if(this.tilemapGroup.length > 0) xPos = lastTilemap.tilemapWidth + lastTilemap.x;
-
-        const tilemap = this.make.tilemap({ key: tileName });
-        const tileset = tilemap.addTilesetImage('spritesheet', 'spritesheet');
-        
-        const objectsLayer = tilemap.getObjectLayer('Objects');
-        
-        objectsLayer.objects.forEach(objData => {
-            const { x = 0, y = 0, name, width = 0, height = 0 } = objData
-            
-                switch (name)
-                {
-                    case 'character-spawn':
-                        {
-                            if(xPos === 0)
-                            {
-                                this.character.setPosition(x * this.mapScale, y * this.mapScale)
-                            }
-                            break;
-                        }
-                    case 'coin' : 
-                    {
-                        const coin = this.physics.add.sprite(xPos + x * this.mapScale, y * this.mapScale, "spritesheet", 78);
-                        // coin.body.setImmovable(true);
-                        coin.setScale(this.mapScale);
-                        coin.body.setAllowGravity(false);
-                        coin.setDepth(999);
-                        coin.setSize(coin.width * 0.5, coin.height * 0.5);
-                        
-                        this.coinGroup.add(coin);
-                        break;
-                    }
-                    case 'spikes' :
-                    {
-                        const spike = this.add.rectangle(xPos + x * this.mapScale, y * this.mapScale, width, height, 0x6666ff);
-                        this.physics.add.existing(spike);
-                        spike.setScale(this.mapScale);
-                        spike.setAlpha(0);
-                        spike.body.setAllowGravity(false);
-                        spike.setOrigin(0,0);
-                        
-                        this.spikeGroup.add(spike);
-
-                        break;
-                    }
-                }
-            })
-            
-            let topLayer = tilemap.createLayer('Top', tileset, 0 + xPos, 0).setScale(this.mapScale);
-            let botLayer = tilemap.createLayer('Bot', tileset, 0 + xPos, 0).setScale(this.mapScale); 
-
-            const botCollider = this.physics.add.collider(this.character, botLayer);
-            botLayer.setCollisionByProperty({collide: true});
-            topLayer.setDepth(1);
-
-            const tilemapWidth = tilemap.widthInPixels * this.mapScale;
-
-                this.tilemapGroup.push({
-                    x: xPos,
-                    tilemapWidth,
-                    tilemap,
-                    topLayer,
-                    botLayer,
-                    colliders: [
-                        botCollider
-                    ]
-                });
-
-    }
-
-    destroyTilemap(index)
-    {
-        const cam = this.cameras.main;
-
-        this.tilemapGroup[index].colliders.forEach(element => {
-            element.destroy();
-        });
-        this.tilemapGroup[index].tilemap.destroy();
-
-        this.tilemapGroup.splice(index, 1)
-
-        this.coinGroup.children.each((obj) => {
-            if(cam.scrollX > obj.x + this.game.config.width + obj.width + 1 )
-            {
-                obj.destroy();
-            }
-        })
-
-        this.spikeGroup.children.each((obj) => {
-            if(cam.scrollX > obj.x + this.game.config.width + obj.width + 1 )
-            {
-                obj.destroy();
-            }
-        })
-    }
-
     showGameOver()
     {
         this.scene.pause();
-        this.screenText.points.setVisible(false);
+
+        this.scene.get('playUI');
 
         this.scene.launch('GameOver', { score:  this.stats.points})
 
